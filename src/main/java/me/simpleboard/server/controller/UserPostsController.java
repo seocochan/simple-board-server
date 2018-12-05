@@ -1,10 +1,7 @@
 package me.simpleboard.server.controller;
 
 import me.simpleboard.server.exception.BadRequestException;
-import me.simpleboard.server.payload.ApiResponse;
-import me.simpleboard.server.payload.PostRequest;
-import me.simpleboard.server.payload.PostSummary;
-import me.simpleboard.server.payload.PagedResponse;
+import me.simpleboard.server.payload.*;
 import me.simpleboard.server.security.CurrentUser;
 import me.simpleboard.server.security.UserPrincipal;
 import me.simpleboard.server.service.PostService;
@@ -23,15 +20,14 @@ public class UserPostsController {
   private final PostService postService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse> createPost(@CurrentUser UserPrincipal currentUser,
-                                                @PathVariable Long userId,
-                                                @Valid @RequestBody PostRequest postRequest) {
+  public PostResponse createPost(@CurrentUser UserPrincipal currentUser,
+                                 @PathVariable Long userId,
+                                 @Valid @RequestBody PostRequest postRequest) {
     if (!userId.equals(currentUser.getId())) {
       throw new BadRequestException("Permission denied");
     }
-    postService.createPost(currentUser.toUser(), postRequest);
 
-    return ResponseEntity.ok(new ApiResponse(true, "Successfully created a post"));
+    return postService.createPost(currentUser.toUser(), postRequest);
   }
 
   @GetMapping

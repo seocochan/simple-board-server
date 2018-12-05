@@ -21,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
           countQuery = "SELECT COUNT(*) FROM posts WHERE id IN ?1",
           nativeQuery = true)
   Page<Post> findByIdInOrderByField(List<Long> id, Pageable pageable);
+
+  Page<Post> findByTitleContainingIgnoreCaseOrTextContainingIgnoreCase(String title, String text, Pageable pageable);
 }

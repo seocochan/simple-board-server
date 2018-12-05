@@ -38,6 +38,7 @@ public class CommentService {
             .user(user)
             .post(post)
             .text(commentRequest.getText())
+            .role(commentRequest.getRole())
             .build();
     commentRepository.save(comment);
   }

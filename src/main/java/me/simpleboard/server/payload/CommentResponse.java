@@ -2,6 +2,8 @@ package me.simpleboard.server.payload;
 
 import lombok.*;
 
+import java.time.Instant;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,5 @@ public class CommentResponse {
   private String role;
   private PostSummary post;
   private UserSummary createdBy;
+  private Instant createdAt;
 }

@@ -1,5 +1,6 @@
 package me.simpleboard.server.controller;
 
+import me.simpleboard.server.exception.BadRequestException;
 import me.simpleboard.server.model.enums.CategoryName;
 import me.simpleboard.server.model.enums.SubCategoryName;
 import me.simpleboard.server.payload.*;
@@ -53,5 +54,18 @@ public class PostController {
     postService.removePostById(currentUser.getId(), postId);
 
     return ResponseEntity.ok(new ApiResponse(true, "Successfully removed a post"));
+  }
+
+  @GetMapping("/search")
+  public PagedResponse<PostSummary> searchPosts(
+          @Valid @RequestParam String q,
+          @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+          @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+    String titleOrText = q.trim();
+    if (titleOrText.length() == 0) {
+      throw new BadRequestException("검색어가 없습니다");
+    }
+
+    return postService.searchPosts(titleOrText, page, size);
   }
 }

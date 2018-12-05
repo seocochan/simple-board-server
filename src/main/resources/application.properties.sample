@@ -19,3 +19,8 @@ spring.jackson.time-zone=UTC
 ## JWT
 app.jwtSecret=
 app.jwtExpirationInMs=
+
+## AWS
+aws.bucketName=
+aws.accessKey=
+aws.secretKey=

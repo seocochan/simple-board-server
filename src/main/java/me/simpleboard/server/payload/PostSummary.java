@@ -4,6 +4,8 @@ import lombok.*;
 import me.simpleboard.server.model.enums.CategoryName;
 import me.simpleboard.server.model.enums.SubCategoryName;
 
+import java.time.Instant;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +19,5 @@ public class PostSummary {
   private String text;
   private String imageUrl;
   private UserSummary createdBy;
+  private Instant createdAt;
 }

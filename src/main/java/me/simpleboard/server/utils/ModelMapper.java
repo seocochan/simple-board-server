@@ -19,6 +19,7 @@ public class ModelMapper {
             .text(post.getText())
             .imageUrl(post.getImageUrl())
             .createdBy(ModelMapper.mapToSummary(post.getUser()))
+            .createdAt(post.getCreatedAt())
             .build();
   }
 
@@ -29,9 +30,10 @@ public class ModelMapper {
             .category(post.getCategory())
             .subCategory(post.getSubCategory())
             .title(post.getTitle())
-            .text(post.getTitle())
+            .text(post.getText())
             .imageUrl(post.getImageUrl())
             .createdBy(ModelMapper.mapToSummary(post.getUser()))
+            .createdAt(post.getCreatedAt())
             .recommends(post.getRecommends().size())
             .isRecommended(isRecommended)
             .build();
@@ -44,6 +46,7 @@ public class ModelMapper {
             .role(comment.getRole())
             .post(ModelMapper.mapToSummary(comment.getPost()))
             .createdBy(ModelMapper.mapToSummary(comment.getUser()))
+            .createdAt(comment.getCreatedAt())
             .build();
   }
 }

@@ -27,18 +27,20 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final RecommendRepository recommendRepository;
+  private final UploadService uploadService;
 
   @Transactional
-  public void createPost(User user, PostRequest postRequest) {
+  public PostResponse createPost(User user, PostRequest postRequest) {
     Post post = Post.builder()
             .category(postRequest.getCategory())
             .subCategory(postRequest.getSubCategory())
             .title(postRequest.getTitle())
             .text(postRequest.getText())
+            .imageUrl(postRequest.getImageUrl())
             .user(user)
             .build();
 
-    postRepository.save(post);
+    return ModelMapper.map(postRepository.save(post), false);
   }
 
   public PostResponse getPostById(Long userId, Long postId) {
@@ -60,6 +62,7 @@ public class PostService {
 
     post.setTitle(postRequest.getTitle());
     post.setText(postRequest.getText());
+    post.setImageUrl(postRequest.getImageUrl());
   }
 
   public void removePostById(Long userId, Long postId) {
@@ -70,6 +73,10 @@ public class PostService {
     }
 
     postRepository.delete(post);
+
+    if (post.getImageUrl()!=null) {
+      uploadService.deleteFile(post.getImageUrl());
+    }
   }
 
   public PagedResponse<PostSummary> getPostsByUser(Long userId, int page, int size) {
@@ -89,6 +96,19 @@ public class PostService {
                                                        int size) {
     Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
     Page<Post> postPage = postRepository.findByCategoryAndSubCategory(category, subCategory, pageable);
+
+    if (postPage.getNumberOfElements() == 0) {
+      return PagedResponse.of(Collections.emptyList(), postPage);
+    }
+    List<PostSummary> postResponses = postPage.map(ModelMapper::mapToSummary).getContent();
+    return PagedResponse.of(postResponses, postPage);
+  }
+
+  public PagedResponse<PostSummary> searchPosts(String titleOrText,
+                                                int page,
+                                                int size) {
+    Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+    Page<Post> postPage = postRepository.findByTitleContainingIgnoreCaseOrTextContainingIgnoreCase(titleOrText, titleOrText, pageable);
 
     if (postPage.getNumberOfElements() == 0) {
       return PagedResponse.of(Collections.emptyList(), postPage);
